@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Debugging Q&A</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(145deg, #0d1117 0%, #1a202c 100%);
+            color: #c9d1d9;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: #161b22;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 1px solid #30363d;
+        }
+        h1 {
+            font-size: 2.2rem;
+            color: #58a6ff;
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        p {
+            text-align: center;
+            color: #8b949e;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+        .qa-card {
+            background: #0d1117;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #21262d;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .qa-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 16px rgba(88, 166, 255, 0.2);
+        }
+        pre {
+            background: #010409;
+            border-radius: 8px;
+            padding: 20px;
+            color: #f0f6fc;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            position: relative;
+        }
+        pre::before {
+            content: "CODE";
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #58a6ff;
+            color: #0d1117;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            background: #010409;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 15px;
+            color: #f0f6fc;
+            font-family: 'JetBrains Mono', monospace;
+            resize: vertical;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.3);
+        }
+        .timer {
+            font-size: 1rem;
+            color: #ff7b72;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+        button {
+            background: #238636;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+            display: block;
+            margin: 20px auto;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        button:hover {
+            background: #2ea043;
+            transform: scale(1.03);
+        }
+        .result {
+            font-size: 1rem;
+            margin-top: 15px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .result.correct {
+            background: rgba(46, 160, 67, 0.2);
+            color: #2ea043;
+        }
+        .result.wrong {
+            background: rgba(248, 81, 73, 0.2);
+            color: #f85149;
+        }
+        #final-score {
+            background: #0d1117;
+            border-radius: 10px;
+            padding: 30px;
+            border: 1px solid #30363d;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #final-score h2 {
+            color: #58a6ff;
+            margin-bottom: 20px;
+        }
+        #final-score p {
+            color: #c9d1d9;
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .stat {
+            background: #21262d;
+            padding: 15px;
+            border-radius: 8px;
+            width: 30%;
+            text-align: center;
+        }
+        .stat span {
+            color: #58a6ff;
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .hidden {
+            display: none;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            pre, textarea {
+                font-size: 0.8rem;
+            }
+            .stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .stat {
+                width: 100%;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Code Debugging Q&A</h1>
+        <p>Answer 15 Python and C debugging questions. 3 minutes per question.<br>Correct: +10 points | Wrong: -5 points | Missed: 0 points</p>
+        <div id="qa" class="hidden">
+            <div id="qa-card" class="qa-card">
+                <h2 id="question-title"></h2>
+                <pre id="code-snippet"></pre>
+                <p>Enter your answer (e.g., the bug, error type, or fix):</p>
+                <textarea id="answer-input" placeholder="Type your answer here..."></textarea>
+                <div id="timer" class="timer">Time left: 3:00</div>
+                <button id="submit">Submit Answer</button>
+                <div id="result" class="result"></div>
+            </div>
+        </div>
+        <button id="start">Start Q&A</button>
+        <div id="final-score" class="hidden">
+            <h2>Game Over!</h2>
+            <p>Your Final Score: <span id="score-display"></span></p>
+            <div class="stats">
+                <div class="stat">
+                    <span id="correct-count"></span>
+                    Correct Answers
+                </div>
+                <div class="stat">
+                    <span id="wrong-count"></span>
+                    Wrong Answers
+                </div>
+                <div class="stat">
+                    <span id="missed-count"></span>
+                    Missed Questions
+                </div>
+            </div>
+            <button id="restart">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                title: "Python: What is the bug in this code?",
+                code: `def add(a, b):\n    return a + b\n\nprint(add(5, '3'))`,
+                answer: "TypeError",
+                hint: "The code tries to add an integer and a string."
+            },
+            {
+                title: "C: What is wrong with this code?",
+                code: `#include <stdio.h>\nint main() {\n    printf("%d", 10 / 0);\n    return 0;\n}`,
+                answer: "Division by zero",
+                hint: "The code attempts to divide by zero."
+            },
+            {
+                title: "Python: How to fix this to print 'Hello World'?",
+                code: `print('Hello World)`,
+                answer: "Add closing quote",
+                hint: "The string is missing a closing single quote."
+            },
+            {
+                title: "C: What is the issue with this code?",
+                code: `#include <stdio.h>\nint main() {\n    int x = 5;\n    printf("%d", x++ + ++x);\n    return 0;\n}`,
+                answer: "Undefined behavior",
+                hint: "The expression modifies x multiple times in a single statement."
+            },
+            {
+                title: "Python: What error does this cause?",
+                code: `numbers = [1, 2, 3]\nprint(numbers[3])`,
+                answer: "IndexError",
+                hint: "The index is out of the list's range."
+            },
+            {
+                title: "C: Fix this code to print 1 to 5",
+                code: `#include <stdio.h>\nint main() {\n    for(int i=1; i<=5; i++);\n        printf("%d ", i);\n    return 0;\n}`,
+                answer: "Remove semicolon after for",
+                hint: "The semicolon terminates the loop prematurely."
+            },
+            {
+                title: "Python: Identify the bug",
+                code: `def func():\n    x = 10\nprint(x)`,
+                answer: "NameError",
+                hint: "The variable x is not in scope outside the function."
+            },
+            {
+                title: "C: Why does this crash?",
+                code: `#include <stdio.h>\nint main() {\n    char *str = "hello";\n    str[0] = 'H';\n    printf("%s", str);\n    return 0;\n}`,
+                answer: "Segmentation fault",
+                hint: "The string literal is read-only."
+            },
+            {
+                title: "Python: What error occurs?",
+                code: `import math\nprint(math.sqrt(-1))`,
+                answer: "ValueError",
+                hint: "Square root of a negative number is invalid."
+            },
+            {
+                title: "C: Fix the infinite loop",
+                code: `#include <stdio.h>\nint main() {\n    int i = 0;\n    while(i < 10);\n        i++;\n    return 0;\n}`,
+                answer: "Remove semicolon",
+                hint: "The semicolon causes the loop to run indefinitely."
+            },
+            {
+                title: "Python: What error does this cause?",
+                code: `dict = {'a':1}\nprint(dict['b'])`,
+                answer: "KeyError",
+                hint: "The key 'b' does not exist in the dictionary."
+            },
+            {
+                title: "C: What is the issue?",
+                code: `#include <stdio.h>\nint main() {\n    int arr[3] = {1,2,3};\n    printf("%d", arr[3]);\n    return 0;\n}`,
+                answer: "Array out of bounds",
+                hint: "Accessing an index beyond the array size."
+            },
+            {
+                title: "Python: Debug this code",
+                code: `for i in range(5):\nprint(i)`,
+                answer: "Indentation error",
+                hint: "The print statement is not indented under the loop."
+            },
+            {
+                title: "C: Why does this crash?",
+                code: `#include <stdlib.h>\nint main() {\n    int *p = malloc(sizeof(int));\n    *p = 10;\n    free(p);\n    *p = 20;\n    return 0;\n}`,
+                answer: "Use after free",
+                hint: "The pointer is used after being freed."
+            },
+            {
+                title: "Python: What is the output?",
+                code: `try:\n    print(1/0)\nexcept:\n    print("Error")`,
+                answer: "Error",
+                hint: "The exception is caught and prints 'Error'."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let missedCount = 0;
+        let timerInterval;
+        let timeLeft = 180; // 3 minutes in seconds
+
+        const startButton = document.getElementById('start');
+        const qaDiv = document.getElementById('qa');
+        const questionTitle = document.getElementById('question-title');
+        const codeSnippet = document.getElementById('code-snippet');
+        const answerInput = document.getElementById('answer-input');
+        const timerDiv = document.getElementById('timer');
+        const submitButton = document.getElementById('submit');
+        const resultDiv = document.getElementById('result');
+        const finalScoreDiv = document.getElementById('final-score');
+        const scoreDisplay = document.getElementById('score-display');
+        const correctCountDisplay = document.getElementById('correct-count');
+        const wrongCountDisplay = document.getElementById('wrong-count');
+        const missedCountDisplay = document.getElementById('missed-count');
+        const restartButton = document.getElementById('restart');
+
+        startButton.addEventListener('click', startQA);
+        restartButton.addEventListener('click', restartQA);
+
+        function startQA() {
+            startButton.classList.add('hidden');
+            qaDiv.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestion >= questions.length) {
+                endQA();
+                return;
+            }
+
+            const q = questions[currentQuestion];
+            questionTitle.textContent = `Question ${currentQuestion + 1}: ${q.title}`;
+            codeSnippet.textContent = q.code;
+            answerInput.value = '';
+            resultDiv.textContent = '';
+            submitButton.disabled = false;
+            timeLeft = 180;
+            updateTimer();
+            timerInterval = setInterval(tickTimer, 1000);
+        }
+
+        submitButton.addEventListener('click', submitAnswer);
+
+        function submitAnswer() {
+            clearInterval(timerInterval);
+            submitButton.disabled = true;
+            const userAnswer = answerInput.value.trim().toLowerCase();
+            const q = questions[currentQuestion];
+            const correctAnswer = q.answer.toLowerCase();
+            if (userAnswer === correctAnswer) {
+                score += 10;
+                correctCount++;
+                resultDiv.textContent = `Correct! +10 points. Hint: ${q.hint}`;
+                resultDiv.className = 'result correct';
+            } else if (userAnswer === '') {
+                missedCount++;
+                resultDiv.textContent = `Missed! 0 points. Correct answer: ${q.answer}. Hint: ${q.hint}`;
+                resultDiv.className = 'result wrong';
+            } else {
+                score -= 5;
+                wrongCount++;
+                resultDiv.textContent = `Wrong! -5 points. Correct answer: ${q.answer}. Hint: ${q.hint}`;
+                resultDiv.className = 'result wrong';
+            }
+            setTimeout(nextQuestion, 3000);
+        }
+
+        function tickTimer() {
+            timeLeft--;
+            updateTimer();
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                missedCount++;
+                const q = questions[currentQuestion];
+                resultDiv.textContent = `Time up! 0 points. Correct answer: ${q.answer}. Hint: ${q.hint}`;
+                resultDiv.className = 'result wrong';
+                submitButton.disabled = true;
+                setTimeout(nextQuestion, 3000);
+            }
+        }
+
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDiv.textContent = `Time left: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function endQA() {
+            qaDiv.classList.add('hidden');
+            finalScoreDiv.classList.remove('hidden');
+            scoreDisplay.textContent = score;
+            correctCountDisplay.textContent = correctCount;
+            wrongCountDisplay.textContent = wrongCount;
+            missedCountDisplay.textContent = missedCount;
+        }
+
+        function restartQA() {
+            currentQuestion = 0;
+            score = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            missedCount = 0;
+            finalScoreDiv.classList.add('hidden');
+            startQA();
+        }
+    </script>
+</body>
+</html>
