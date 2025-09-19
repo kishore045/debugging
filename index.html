@@ -371,7 +371,7 @@
             submitButton.disabled = false;
             timeLeft = 180;
             updateTimer();
-            timerInterval = setInterval(tickTimer, 3000);
+            timerInterval = setInterval(tickTimer, 1000);
         }
 
         submitButton.addEventListener('click', submitAnswer);
@@ -392,12 +392,12 @@
                 resultDiv.textContent = `Missed! 0 points. Correct answer: ${q.answer}. Hint: ${q.hint}`;
                 resultDiv.className = 'result wrong';
             } else {
-                score -= 5;
+                score -= 0;
                 wrongCount++;
-                resultDiv.textContent = `Wrong! -5 points. Correct answer: ${q.answer}. Hint: ${q.hint}`;
+                resultDiv.textContent = `Wrong! 0 points. Correct answer: ${q.answer}. Hint: ${q.hint}`;
                 resultDiv.className = 'result wrong';
             }
-            setTimeout(nextQuestion, 3000);
+            setTimeout(nextQuestion, 1000);
         }
 
         function tickTimer() {
