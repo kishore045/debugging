@@ -331,7 +331,7 @@
         let wrongCount = 0;
         let missedCount = 0;
         let timerInterval;
-        let timeLeft = 180; // 3 minutes in seconds
+        let timeLeft = 60; // 3 minutes in seconds
 
         const startButton = document.getElementById('start');
         const qaDiv = document.getElementById('qa');
@@ -397,7 +397,7 @@
                 resultDiv.textContent = `Wrong! -5 points. Correct answer: ${q.answer}. Hint: ${q.hint}`;
                 resultDiv.className = 'result wrong';
             }
-            setTimeout(nextQuestion, 3000);
+            setTimeout(nextQuestion, 1000);
         }
 
         function tickTimer() {
@@ -410,7 +410,7 @@
                 resultDiv.textContent = `Time up! 0 points. Correct answer: ${q.answer}. Hint: ${q.hint}`;
                 resultDiv.className = 'result wrong';
                 submitButton.disabled = true;
-                setTimeout(nextQuestion, 3000);
+                setTimeout(nextQuestion, 1000);
             }
         }
 
