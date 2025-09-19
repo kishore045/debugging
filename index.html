@@ -233,96 +233,99 @@
 
     <script>
         const questions = [
-            {
-                title: "Python: What is the bug in this code?",
-                code: `def add(a, b):\n    return a + b\n\nprint(add(5, '3'))`,
-                answer: "TypeError",
-                hint: "The code tries to add an integer and a string."
-            },
-            {
-                title: "C: What is wrong with this code?",
-                code: `#include <stdio.h>\nint main() {\n    printf("%d", 10 / 0);\n    return 0;\n}`,
-                answer: "Division by zero",
-                hint: "The code attempts to divide by zero."
-            },
-            {
-                title: "Python: How to fix this to print 'Hello World'?",
-                code: `print('Hello World)`,
-                answer: "Add closing quote",
-                hint: "The string is missing a closing single quote."
-            },
-            {
-                title: "C: What is the issue with this code?",
-                code: `#include <stdio.h>\nint main() {\n    int x = 5;\n    printf("%d", x++ + ++x);\n    return 0;\n}`,
-                answer: "Undefined behavior",
-                hint: "The expression modifies x multiple times in a single statement."
-            },
-            {
-                title: "Python: What error does this cause?",
-                code: `numbers = [1, 2, 3]\nprint(numbers[3])`,
-                answer: "IndexError",
-                hint: "The index is out of the list's range."
-            },
-            {
-                title: "C: Fix this code to print 1 to 5",
-                code: `#include <stdio.h>\nint main() {\n    for(int i=1; i<=5; i++);\n        printf("%d ", i);\n    return 0;\n}`,
-                answer: "Remove semicolon after for",
-                hint: "The semicolon terminates the loop prematurely."
-            },
-            {
-                title: "Python: Identify the bug",
-                code: `def func():\n    x = 10\nprint(x)`,
-                answer: "NameError",
-                hint: "The variable x is not in scope outside the function."
-            },
-            {
-                title: "C: Why does this crash?",
-                code: `#include <stdio.h>\nint main() {\n    char *str = "hello";\n    str[0] = 'H';\n    printf("%s", str);\n    return 0;\n}`,
-                answer: "Segmentation fault",
-                hint: "The string literal is read-only."
-            },
-            {
-                title: "Python: What error occurs?",
-                code: `import math\nprint(math.sqrt(-1))`,
-                answer: "ValueError",
-                hint: "Square root of a negative number is invalid."
-            },
-            {
-                title: "C: Fix the infinite loop",
-                code: `#include <stdio.h>\nint main() {\n    int i = 0;\n    while(i < 10);\n        i++;\n    return 0;\n}`,
-                answer: "Remove semicolon",
-                hint: "The semicolon causes the loop to run indefinitely."
-            },
-            {
-                title: "Python: What error does this cause?",
-                code: `dict = {'a':1}\nprint(dict['b'])`,
-                answer: "KeyError",
-                hint: "The key 'b' does not exist in the dictionary."
-            },
-            {
-                title: "C: What is the issue?",
-                code: `#include <stdio.h>\nint main() {\n    int arr[3] = {1,2,3};\n    printf("%d", arr[3]);\n    return 0;\n}`,
-                answer: "Array out of bounds",
-                hint: "Accessing an index beyond the array size."
-            },
-            {
-                title: "Python: Debug this code",
-                code: `for i in range(5):\nprint(i)`,
-                answer: "Indentation error",
-                hint: "The print statement is not indented under the loop."
-            },
-            {
-                title: "C: Why does this crash?",
-                code: `#include <stdlib.h>\nint main() {\n    int *p = malloc(sizeof(int));\n    *p = 10;\n    free(p);\n    *p = 20;\n    return 0;\n}`,
-                answer: "Use after free",
-                hint: "The pointer is used after being freed."
-            },
-            {
-                title: "Python: What is the output?",
-                code: `try:\n    print(1/0)\nexcept:\n    print("Error")`,
-                answer: "Error",
-                hint: "The exception is caught and prints 'Error'."
-            }
+            [
+  {
+    title: "Python: What is the bug in this code?",
+    code: "def add(a, b):\n    return a + b\n\nprint(add(5, '3'))",
+    answer: "def add(a, b):\n    return str(a) + b\n\nprint(add(5, '3'))  ",
+    hint: "The code tries to add an integer and a string."
+  },
+  {
+    title: "C: What is wrong with this code?",
+    code: "#include <stdio.h>\nint main() {\n    printf(\"%d\", 10 / 0);\n    return 0;\n}",
+    answer: "#include <stdio.h>\nint main() {\n    int denominator = 0;\n    if (denominator != 0) {\n        printf(\"%d\", 10 / denominator);\n    } else {\n        printf(\"Error: Division by zero\");\n    }\n    return 0;\n}",
+    hint: "The code attempts to divide by zero."
+  },
+  {
+    title: "Python: How to fix this to print 'Hello World'?",
+    code: "print('Hello World)",
+    answer: "print('Hello World')",
+    hint: "The string is missing a closing single quote."
+  },
+  {
+    title: "C: What is the issue with this code?",
+    code: "#include <stdio.h>\nint main() {\n    int x = 5;\n    printf(\"%d\", x++ + ++x);\n    return 0;\n}",
+    answer: "#include <stdio.h>\nint main() {\n    int x = 5;\n    x++;\n    printf(\"%d\", x + ++x);     return 0;\n}",
+    hint: "The expression modifies x multiple times in a single statement."
+  },
+  {
+    title: "Python: What error does this cause?",
+    code: "numbers = [1, 2, 3]\nprint(numbers[3])",
+    answer: "numbers = [1, 2, 3]\nif len(numbers) > 3:\n    print(numbers[3])\nelse:\n    print(\"Index out of range\")",
+    hint: "The index is out of the list's range."
+  },
+  {
+    title: "C: Fix this code to print 1 to 5",
+    code: "#include <stdio.h>\nint main() {\n    for(int i=1; i<=5; i++);\n        printf(\"%d \", i);\n    return 0;\n}",
+    answer: "#include <stdio.h>\nint main() {\n    for(int i=1; i<=5; i++) {\n        printf(\"%d \", i);\n    }\n    return 0;\n}",
+    hint: "The semicolon terminates the loop prematurely."
+  },
+  {
+    title: "Python: Identify the bug",
+    code: "def func():\n    x = 10\nprint(x)",
+    answer: "def func():\n    x = 10\n    return x\n\nprint(func())  ",
+    hint: "The variable x is not in scope outside the function."
+  },
+  {
+    title: "C: Why does this crash?",
+    code: "#include <stdio.h>\nint main() {\n    char *str = \"hello\";\n    str[0] = 'H';\n    printf(\"%s\", str);\n    return 0;\n}",
+    answer: "#include <stdio.h>\nint main() {\n    char str[] = \"hello\";\n    str[0] = 'H';\n    printf(\"%s\", str);      return 0;\n}",
+    hint: "The string literal is read-only."
+  },
+  {
+    title: "Python: What error occurs?",
+    code: "import math\nprint(math.sqrt(-1))",
+    answer: "import cmath\nprint(cmath.sqrt(-1))  ",
+    hint: "Square root of a negative number is invalid."
+  },
+  {
+    title: "C: Fix the infinite loop",
+    code: "#include <stdio.h>\nint main() {\n    int i = 0;\n    while(i < 10);\n        i++;\n    return 0;\n}",
+    answer: "#include <stdio.h>\nint main() {\n    int i = 0;\n    while(i < 10) {\n        i++;\n    }\n    return 0;\n}",
+    hint: "The semicolon causes the loop to run indefinitely."
+  },
+  {
+    title: "Python: What error does this cause?",
+    code: "dict = {'a':1}\nprint(dict['b'])",
+    answer: "dict = {'a': 1}\nprint(dict.get('b', 'Key not found'))  ",
+    hint: "The key 'b' does not exist in the dictionary."
+  },
+  {
+    title: "C: What is the issue?",
+    code: "#include <stdio.h>\nint main() {\n    int arr[3] = {1,2,3};\n    printf(\"%d\", arr[3]);\n    return 0;\n}",
+    answer: "#include <stdio.h>\nint main() {\n    int arr[3] = {1, 2, 3};\n    printf(\"%d\", arr[2]);      return 0;\n}",
+    hint: "Accessing an index beyond the array size."
+  },
+  {
+    title: "Python: Debug this code",
+    code: "for i in range(5):\nprint(i)",
+    answer: "for i in range(5):\n    print(i) ",
+    hint: "The print statement is not indented under the loop."
+  },
+  {
+    title: "C: Why does this crash?",
+    code: "#include <stdlib.h>\nint main() {\n    int *p = malloc(sizeof(int));\n    *p = 10;\n    free(p);\n    *p = 20;\n    return 0;\n}",
+    answer: "#include <stdlib.h>\n#include <stdio.h>\nint main() {\n    int *p = malloc(sizeof(int));\n    if (p == NULL) return 1;\n    *p = 10;\n    printf(\"%d\\n\", *p);\n    free(p);\n    p = NULL;     return 0;\n}",
+    hint: "The pointer is used after being freed."
+  },
+  {
+    title: "Python: What is the output?",
+    code: "try:\n    print(1/0)\nexcept:\n    print(\"Error\")",
+    answer: "try:\n    print(1/0)\nexcept ZeroDivisionError:\n    print(\"Error\")  ",
+    hint: "The exception is caught and prints 'Error'."
+  }
+]
+
         ];
 
         let currentQuestion = 0;
